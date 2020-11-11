@@ -13,6 +13,7 @@
     "dialogflow": "^4.0.3",
     "express": "^4.17.1",
     "mysql": "^2.18.1",
+    "nodemon": "^2.0.6",
     "uuid": "^8.3.1"
   },
   "devDependencies": {},

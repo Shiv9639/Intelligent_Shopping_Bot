@@ -4,10 +4,8 @@ module.exports={
 
     
     getProductByNameAndOrPrice:(name,price,callBack) =>{
-        var query=''
-        console.log(price)
+        let query=''
         if(price!==undefined){
-
             query=`select * from Product where product_name like '%${name}%' and product_price <=`+ parseInt(price,10)
         }
         else{
@@ -15,16 +13,32 @@ module.exports={
         }
 
         db.query(query,
-        (error, results, fields) => {
-            if (error) {
-              callBack(error);
+            (error, results, fields) => {
+                if (error) {
+                    callBack(error);
+                }
+                return callBack(null, results);
             }
-            return callBack(null, results);
-          }
         );
+    },
+
+    getProductByCategory:(category,callBack) => {
+        let query = '';
+        query = `select * from Product where product_category like '%${category}%'`;
+        db.query(query,
+            (error,results,fields) => {
+                if(error) {
+                    callBack(error);
+                }
+                return callBack(null,results);
+            }
+        );
+    }
+    
+  
 
 
         
-    }
+
 
 }

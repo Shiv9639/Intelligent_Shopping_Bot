@@ -1,5 +1,6 @@
 const {
-    getProductByNameAndOrPrice
+    getProductByNameAndOrPrice,
+    getProductByCategory,
 }=require('./product.service');
 
 module.exports ={
@@ -12,10 +13,21 @@ module.exports ={
               console.log(err);
             }
             else {
-              return res.json(
-                results
-              );
+              return res.json(results);
             }
         });
+    },
+
+    productsByCategory:(req,res) => {
+
+      const category = req.params.category;
+      getProductByCategory(category,(err,results) => {
+        if(err) {
+          console.log(err);
+        }
+        else {
+          return res.json(results);
+        }
+      });
     }
 }
