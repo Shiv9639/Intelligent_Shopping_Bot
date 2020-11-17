@@ -1,8 +1,8 @@
 const router = require("express").Router();
-const{ listProductByName, productsByCategory }= require('./product.controller')
+const{ listProducts}= require('./product.controller')
 
-router.get('/products',listProductByName);
-router.get('/products/categories/:category',productsByCategory);
-
+router.get('/products',listProducts);
+router.get('/products/categories/:category',listProducts);
+router.get('/products/brand/:brand',listProducts);
 
 module.exports = router;

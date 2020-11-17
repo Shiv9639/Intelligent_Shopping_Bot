@@ -1,14 +1,15 @@
 const {
-    getProductByNameAndOrPrice,
-    getProductByCategory,
+  getProducts,
 }=require('./product.service');
 
 module.exports ={
 
-    listProductByName :(req,res)=>{
+    listProducts :(req,res)=>{
         const name=req.query.name
         const price=req.query.price
-        getProductByNameAndOrPrice(name,price,(err, results) => {
+        const category = req.params.category;
+        const brand = req.params.brand;
+        getProducts(name,price,category,brand,(err, results) => {
             if (err) {
               console.log(err);
             }
@@ -18,7 +19,7 @@ module.exports ={
         });
     },
 
-    productsByCategory:(req,res) => {
+  /*  productsByCategory:(req,res) => {
 
       const category = req.params.category;
       getProductByCategory(category,(err,results) => {
@@ -30,4 +31,5 @@ module.exports ={
         }
       });
     }
+    */
 }
