@@ -13,8 +13,9 @@ module.exports ={
         const gender = req.query.gender;
         const type = req.query.type;
         const capacity = req.query.capacity;
+        const description = req.query.description;
 
-        getProducts(name,price,category,brand,color,gender,type,capacity,(err, results) => {
+        getProducts(name,price,category,brand,color,gender,type,capacity,description,(err, results) => {
             if (err) {
               console.log(err);
             }

@@ -7,7 +7,7 @@ app.use(express.json());
 app.use("/api/v1", productRouter);
 
 
-const port = 8080;
+const port = 8083;
 app.listen(port, () => {
   console.log("server up and running on PORT :", port);
 });

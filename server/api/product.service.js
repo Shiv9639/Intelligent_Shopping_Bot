@@ -4,33 +4,38 @@ const db = require('../config/connection')
 module.exports={
 
     
-    getProducts:(name,price,category,brand,color,gender,type,capacity,callBack) =>{
-        let query=''
+    getProducts:(name,price,category,brand,color,gender,type,capacity,description,callBack) =>{
+        let query="select * from Product where 1=1"
+       
+        if(category!==undefined){
+            query=query+ " and product_category like '%"+category+"%'";
+        }
+        if(name!==undefined){
+            query=query+ " and product_name like '%"+name+"%'";
+        }
         if(price!==undefined){
-            query=`select * from Product where product_name like '%${name}%' and product_price <=`+ parseInt(price,10)
+            query=query+ " and product_price <= "+parseFloat(price);
         }
-        else if(category!==undefined){
-            query = `select * from Product where product_category like '%${category}%'`;
-
+        if(brand!==undefined){
+            query=query+ " and product_brand like '%"+brand+"%'";
         }
-        else if(brand!==undefined){
-            query = `select * from Product where product_category like '%${brand}%'`;
+        if(color!==undefined){
+            query=query+ " and product_color like '%"+color+"%'";
         }
-        else if(name!==undefined){
-            query=`select * from Product where product_name like '%${name}%'`
+        if(gender!==undefined){
+            query=query+ " and gender like '%"+gender+"%'";
         }
-        else if(color!==undefined){
-            query=`select * from Product where product_color like '%${color}%'`
+        if(type!==undefined){
+            query=query+ " and product_types like '%"+type+"%'";
         }
-        else if(gender!==undefined){
-            query=`select * from Product where gender like '%${gender}%'`
+        if(capacity!==undefined){
+            query=query+ " and capacity like '%"+capacity+"%'";
         }
-        else if(type!==undefined){
-            query=`select * from Product where product_types like '%${type}%'`
+        if(description!==undefined){
+            query=query+ " and product_description like '%"+description+"%'";
         }
-        else if(capacity!==undefined){
-            query=`select * from Product where capacity like '%${capacity}%'`
-        }
+      
+       
 
         db.query(query,
             (error, results, fields) => {
@@ -41,4 +46,5 @@ module.exports={
             }
         );
     },
+
 }
