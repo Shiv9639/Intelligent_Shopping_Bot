@@ -1,4 +1,3 @@
-const { getConnection } = require('../config/connection')
 const db = require('../config/connection')
 
 module.exports={
