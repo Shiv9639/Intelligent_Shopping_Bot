@@ -94,18 +94,18 @@
                 sessionId = Math.random().toString(36).slice(-5);
                 var response;
                 $.ajax({
-                    url: 'http://35.171.36.122:8088/api/v1/dialogFlowGateway/sendTextMessage',
+                    url: 'http://127.0.0.1:8083/api/v1/dialogflowgateway',
                     method: 'POST',
-                    headers: {
-                        Authorization: 'Basic ' + btoa('admin@hr:admin8hey4123!'),
+                    // headers: {
+                    //     Authorization: 'Basic ' + btoa('admin@hr:admin8hey4123!'),
                         
-                    },
+                    // },
                     contentType: 'application/json',
                     data: JSON.stringify({
-                        'sessionID': sessionId,
-                        'textOrEvent': dto.text,
-                        'languageCode': 'en-US',
-                        'projectID': project_id
+                        // 'sessionID': sessionId,
+                        'msg': dto.text,
+                        // 'languageCode': 'en-US',
+                        // 'projectID': project_id
                     })
                    }).done((data) => {
                        window.ConversationalForm.addRobotChatResponse(data.fulfillmentText)

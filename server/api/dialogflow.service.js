@@ -1,11 +1,13 @@
 const dialogflow = require('@google-cloud/dialogflow');
 const uuid = require('uuid');
 
-
+const sessionId = uuid.v4();
 
 module.exports = {
      connectToDialogFlow:async (msg) => {
-        const sessionId = uuid.v4();
+        
+
+        
 
         const sessionClient = new dialogflow.SessionsClient({
             keyFilename: "./credentails.json"
@@ -13,6 +15,7 @@ module.exports = {
 
         const sessionPath = sessionClient.projectAgentSessionPath('intelligent-store-9vkx', sessionId);
 
+       
         const request = {
             session: sessionPath,
             queryInput: {
