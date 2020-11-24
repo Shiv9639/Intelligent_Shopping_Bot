@@ -4,5 +4,5 @@ const {dialogflowController } = require('./dialogflow.controller');
 
 
 router.get('/products',listProducts);
-router.post('/diaflowgateway', dialogflowController);
+router.post('/dialogflowgateway', dialogflowController);
 module.exports = router;

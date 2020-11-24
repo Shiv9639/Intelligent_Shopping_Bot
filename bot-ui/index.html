@@ -47,7 +47,7 @@
         </div>
         <form id="form">
             <cf-robot-message id='greetings'></cf-robot-message>
-            <input type='text' id='input1'cf-input-placeholder='Type a message'>
+            <input type='text' id='input1' cf-input-placeholder='Type a message'>
 
         </form>
         <div id="cf-context" role="cf-context" cf-context></div>
@@ -55,6 +55,12 @@
 
     <script>
       $(document).ready(function() {
+
+                    
+        var msg;     
+        var formdata = {};
+        var sessionId =  Math.random().toString(35).substring(2,25);
+        var intentName;
         var day = new Date();
         var hr = day.getHours();
         var  message;
@@ -68,13 +74,16 @@
           message = "Good Evening!";
         }
         $('#greetings').attr('cf-questions',message);
-        $('#input1').attr('cf-questions','How may I help you?<br>Please type your query in the message box below' )
+        $('#input1').attr('cf-questions','How may I help you?<br>Please enter the product name you want to buy?' )
+
+
+       
         var conversationalForm = window.cf.ConversationalForm.startTheConversation({
             formEl: document.getElementById("form"),
             context: document.getElementById("cf-context"),
             preventAutoFocus: true,
             userInterfaceOptions: {
-                controlElementsInAnimationDelay: 300,
+                // controlElementsInAnimationDelay: 300,
                 robot: {
                     robotResponseTime: 0,
                     chainedResponseTime: 400,
@@ -88,50 +97,107 @@
             },
             loadExternalStyleSheet: true,
             theme: 'green',
+
+
+
             
             hideUserInputOnNoneTextInput: true,
             flowStepCallback: function(dto, success, error) {
-                sessionId = Math.random().toString(36).slice(-5);
                 var response;
-                $.ajax({
-                    url: 'http://127.0.0.1:8083/api/v1/dialogflowgateway',
-                    method: 'POST',
-                    // headers: {
-                    //     Authorization: 'Basic ' + btoa('admin@hr:admin8hey4123!'),
+                var once = 0;
+                if(intentName !== undefined) {
+                    if(intentName.toLowerCase().includes('kurta')) {
+                    
+                        msg = dto.text + ' kurta';
                         
-                    // },
+                        once = 1;
+                    }
+                    if(intentName.toLowerCase().includes('shoes')) {
+                        msg = dto.text + ' shoes';
+                        
+                        once = 1;
+                    }
+                    if(intentName.toLowerCase().includes('speaker')) {
+                        msg = dto.text + ' speaker';
+                        once = 1;
+                    }
+                    
+                   
+                } else {
+                    msg = dto.text;
+                    console.log(msg);
+            
+                }
+                
+                $.ajax({
+                    url: 'https://9d3a4d08a24a.ngrok.io/api/v1/dialogflowgateway',
+                    method: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({
-                        // 'sessionID': sessionId,
-                        'msg': dto.text,
-                        // 'languageCode': 'en-US',
-                        // 'projectID': project_id
+                        'msg': msg,
+                        'sessionId':sessionId
                     })
-                   }).done((data) => {
-                       window.ConversationalForm.addRobotChatResponse(data.fulfillmentText)
-                        var tempMsg;
-                        
-                        if(data.fulfillmentText === "Sorry, I couldn't understand that."){
-                            tempMsg = 'Please try again with relevant question.'
-                        }else {
-                            tempMsg = "Hope that helps. Please type in any other query; I'll be happy to answer."
+                   }).done((data) => {   
+                        if(once === 0) {
+                            intentName = data.intent_name;
+                        } else if(once === 1) {
+                            intentName = undefined;
                         }
-                       
+                    
                         window.ConversationalForm.addTags([{
                             tag: "input",
-                            type: 'text',
-                            name: 'userInput',
-                            id: 'userInput',
-                            'cf-questions': tempMsg,
-                            'cf-input-placeholder':'Type a message' 
+                            type: "text",
+                            'cf-questions': data.response_text,
+                            'cf-input-placeholder':'Type a message',
+                            
                         }]);
-                        success();
+                        if(data.conversation_end_flag === 0) {
+
+                            if(Object.entries(data.parameters.fields).length !== 0) {
+                                    var keyname = Object.keys(data.parameters.fields)[0];
+                                    if(Object.keys(data.parameters.fields[keyname])[0] === 'stringValue'){
+                                        var value = data.parameters.fields[keyname]['stringValue'];
+                                        formdata[keyname] = value;
+                                    }
+                                    if(Object.keys(data.parameters.fields[keyname])[0] === 'numberValue'){
+                                        var value = data.parameters.fields[keyname]['numberValue'];
+                                        formdata[keyname] = value;
+                                    }
+                            
+                            
+                                
+                            } 
+                            success();
+                        }
+                        if(data.conversation_end_flag === 1) {
+                            console.log(data);
+                            conversationalForm.addRobotChatResponse(data.response_text)
+                            if(Object.entries(data.parameters).length !== 0) {
+                                    var keyname = Object.keys(data.parameters)[0];
+                                    if(Object.keys(data.parameters[keyname])[0] === 'stringValue'){
+                                        var value = data.parameters[keyname]['stringValue'];
+                                        formdata[keyname] = value;
+                                    }
+                                    if(Object.keys(data.parameters[keyname])[0] === 'numberValue'){
+                                        var value = data.parameters[keyname]['numberValue'];
+                                        formdata[keyname] = value;
+                                    }
+                            
+                            
+                                
+                            }
+                           console.log(formdata);
+                           formdata = {};
+                           
+        
+                        }
+                        
+                        
 
                    }); 
                 },
-                submitCallback: function() {
                 
-                }
+               
                 
         });
         
