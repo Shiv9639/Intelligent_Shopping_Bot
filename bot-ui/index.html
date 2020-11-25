@@ -48,6 +48,7 @@
         <form id="form">
             <cf-robot-message id='greetings'></cf-robot-message>
             <input type='text' id='input1' cf-input-placeholder='Type a message'>
+            <div class="radio-control" ></div>
 
         </form>
         <div id="cf-context" role="cf-context" cf-context></div>
@@ -131,7 +132,7 @@
                 }
                 
                 $.ajax({
-                    url: 'https://6ac93154ad0c.ngrok.io/api/v1/dialogflowgateway',
+                    url: 'https://529cf8c7e89e.ngrok.io/api/v1/dialogflowgateway',
                     method: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({
@@ -144,15 +145,21 @@
                         } else if(once === 1) {
                             intentName = undefined;
                         }
+
+                        $("#input1").hide();
                     
-                        window.ConversationalForm.addTags([{
-                            tag: "input",
-                            type: "text",
-                            'cf-questions': data.response_text,
-                            'cf-input-placeholder':'Type a message',
-                            
-                        }]);
+                      
                         if(data.conversation_end_flag === 0) {
+                          
+                            conversationalForm.addTags([{
+                                tag: "input",
+                                type: "text",
+                                name: "userInput",
+                                id: "userInput",
+                                'cf-questions': data.response_text,
+                                'cf-input-placeholder':'Type a message',
+                            
+                             }]);
                           
                             if(Object.entries(data.parameters.fields).length !== 0) {
                                     var keyname = Object.keys(data.parameters.fields)[0];
@@ -178,42 +185,69 @@
                             success();
                         }
                         if(data.conversation_end_flag === 1) {
+                           
+                       // conversationalForm.addRobotChatResponse(data.response_text)
+                       if(Object.entries(data.parameters).length !== 0) {
+                               var keyname = Object.keys(data.parameters)[0];
+                               if(Object.keys(data.parameters[keyname])[0] === 'stringValue'){
+                                   var value = data.parameters[keyname]['stringValue'];
+                                   formdata[keyname] = value;
+                               }
+                               if(Object.keys(data.parameters[keyname])[0] === 'numberValue'){
+                                   var value = data.parameters[keyname]['numberValue'];
+                                   formdata[keyname] = value;
+                               }
+                               
+                   
+                       }
                        
-                            conversationalForm.addRobotChatResponse(data.response_text)
-                            if(Object.entries(data.parameters).length !== 0) {
-                                    var keyname = Object.keys(data.parameters)[0];
-                                    if(Object.keys(data.parameters[keyname])[0] === 'stringValue'){
-                                        var value = data.parameters[keyname]['stringValue'];
-                                        formdata[keyname] = value;
-                                    }
-                                    if(Object.keys(data.parameters[keyname])[0] === 'numberValue'){
-                                        var value = data.parameters[keyname]['numberValue'];
-                                        formdata[keyname] = value;
-                                    }
-                                    
+                     $.ajax({
+                       url: 'https://529cf8c7e89e.ngrok.io/api/v1/products',
+                        method: 'POST',
+                       contentType: 'application/json',
+                       data: JSON.stringify(formdata)
+
+                     }).done((data1) => {   
+                        let optionTags= [];
+                           for(let d in data1) {
+                               name = data1[parseInt(d)].product_name
+                               optionTags.push({
+                                   tag: "input",
+                                   type: "radio",
+                                   "cf-label": name, 
+                                   "cf-image":data1[parseInt(d)].product_image_url
+                               });
+                           }
+                          
+                           conversationalForm.addTags(optionTags);
+                            success();
+                           
+                           $("#userInput").hide();
+                           
+                     })
+
+
+                       
+                      formdata = {};
+                      
+                       
+                       
+                    }
+
                         
-                            }
-                          $.ajax({
-                            url: 'https://6ac93154ad0c.ngrok.io/api/v1/products',
-                             method: 'POST',
-                            contentType: 'application/json',
-                            data: JSON.stringify(formdata)
-
-                          }).done((data) => {   
-                                console.log(data)
-                          })
-
-
-
-                           formdata = {};
+                        
                            
         
-                        }
+                        
                         
                         
 
                    }); 
                 },
+                // submitCallback:function(dto, success, error) {
+                   
+                      
+                // }
                 
                
                 
