@@ -131,7 +131,7 @@
                 }
                 
                 $.ajax({
-                    url: 'https://1c3bf5e42971.ngrok.io/api/v1/dialogflowgateway',
+                    url: 'https://6ac93154ad0c.ngrok.io/api/v1/dialogflowgateway',
                     method: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({
@@ -153,7 +153,7 @@
                             
                         }]);
                         if(data.conversation_end_flag === 0) {
-                            console.log(data);
+                          
                             if(Object.entries(data.parameters.fields).length !== 0) {
                                     var keyname = Object.keys(data.parameters.fields)[0];
                                     if(Object.keys(data.parameters.fields[keyname])[0] === 'stringValue'){
@@ -164,7 +164,7 @@
                                         var value = data.parameters.fields[keyname]['numberValue'];
                                         formdata[keyname] = value;
                                     }
-                                    console.log(formdata);
+                                 
 
                                     // if(formdata.hasOwnProperty('Description')) {
                                     //     formdata['Description'] += ", " + value;
@@ -178,7 +178,7 @@
                             success();
                         }
                         if(data.conversation_end_flag === 1) {
-                            console.log(data);
+                       
                             conversationalForm.addRobotChatResponse(data.response_text)
                             if(Object.entries(data.parameters).length !== 0) {
                                     var keyname = Object.keys(data.parameters)[0];
@@ -191,11 +191,20 @@
                                         formdata[keyname] = value;
                                     }
                                     
-                            
-                            
-                                
+                        
                             }
-                           console.log(formdata);
+                          $.ajax({
+                            url: 'https://6ac93154ad0c.ngrok.io/api/v1/products',
+                             method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify(formdata)
+
+                          }).done((data) => {   
+                                console.log(data)
+                          })
+
+
+
                            formdata = {};
                            
         

@@ -3,35 +3,36 @@ const db = require('../config/connection')
 module.exports={
 
     
-    getProducts:(name,price,category,brand,color,gender,type,capacity,description,callBack) =>{
+    getProducts:(price,category,brand,color,gender,type,capacity,description,callBack) =>{
+
+        
+
+
         let query="select * from Product where 1=1"
        
         if(category!==undefined){
-            query=query+ " and product_category like '%"+category+"%'";
-        }
-        if(name!==undefined){
-            query=query+ " and product_name like '%"+name+"%'";
+            query=query+ " or LOWER(product_category) like '%"+category+"%'";
         }
         if(price!==undefined){
-            query=query+ " and product_price <= "+parseFloat(price);
+            query=query+ " or product_price <= "+parseFloat(price);
         }
         if(brand!==undefined){
-            query=query+ " and product_brand like '%"+brand+"%'";
+            query=query+ " or LOWER(brand) like '%"+brand+"%'";
         }
         if(color!==undefined){
-            query=query+ " and product_color like '%"+color+"%'";
+            query=query+ " or LOWER(product_color) like '%"+color+"%'";
         }
         if(gender!==undefined){
-            query=query+ " and gender like '%"+gender+"%'";
+            query=query+ " or LOWER(gender) like '%"+gender+"%'";
         }
         if(type!==undefined){
-            query=query+ " and product_types like '%"+type+"%'";
+            query=query+ " or LOWER(product_types) like '%"+type+"%'";
         }
         if(capacity!==undefined){
-            query=query+ " and capacity like '%"+capacity+"%'";
+            query=query+ " or LOWER(capacity) like '%"+capacity+"%'";
         }
         if(description!==undefined){
-            query=query+ " and product_description like '%"+description+"%'";
+            query=query+ " or LOWER(product_description) like '%"+description+"%'";
         }
       
        

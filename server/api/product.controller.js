@@ -5,17 +5,16 @@ const {
 module.exports ={
 
     listProducts :(req,res)=>{
-        const name=req.query.name
-        const price=req.query.price
-        const category = req.query.category;
-        const brand = req.query.brand;
-        const color = req.query.color;
-        const gender = req.query.gender;
-        const type = req.query.type;
-        const capacity = req.query.capacity;
-        const description = req.query.description;
+        const price=req.body.price
+        const category = req.body.ProductName;
+        const brand = req.body.brand;
+        const color = req.body.color;
+        const gender = req.body.gender;
+        const type = req.body.Types;
+        const capacity = req.body.capacity;
+        const description = req.body.Description;
 
-        getProducts(name,price,category,brand,color,gender,type,capacity,description,(err, results) => {
+        getProducts(price,category,brand,color,gender,type,capacity,description,(err, results) => {
             if (err) {
               console.log(err);
             }
